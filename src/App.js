@@ -10,6 +10,8 @@ export default function AuthApp() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [cart, setCart] = useState([]);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleLogin = async () => {
     setError("");
@@ -39,6 +41,16 @@ export default function AuthApp() {
 
   const addToCart = (product) => {
     setCart([...cart, product]);
+  };
+
+  const handlePayment = () => {
+    setShowPayment(true);
+    setTimeout(() => {
+      setShowPayment(false);
+      setShowSuccess(true);
+      setCart([]);
+      setTimeout(() => setShowSuccess(false), 2000);
+    }, 1000);
   };
 
   return (
@@ -90,14 +102,35 @@ export default function AuthApp() {
 
           <h2 className="text-xl font-semibold mt-4">Cart</h2>
           {cart.length > 0 ? (
-            cart.map((item, index) => (
-              <div key={index} className="p-2 border-b">
-                {item.name} - ${item.price}
-              </div>
-            ))
+            <>
+              {cart.map((item, index) => (
+                <div key={index} className="p-2 border-b">
+                  {item.name} - ${item.price}
+                </div>
+              ))}
+              <Button className="mt-4 w-full bg-green-500" onClick={handlePayment}>
+                Pay Now
+              </Button>
+            </>
           ) : (
             <p>Your cart is empty.</p>
           )}
+        </div>
+      )}
+
+      {showPayment && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h2 className="text-xl font-semibold">Processing Payment...</h2>
+          </div>
+        </div>
+      )}
+
+      {showSuccess && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h2 className="text-xl font-semibold text-green-500">Payment Successful!</h2>
+          </div>
         </div>
       )}
     </div>
