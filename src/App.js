@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Card, CardContent } from "./components/ui/card";
-//import "@/components/ui/globals.css";
 import axios from "axios";
 
 export default function AuthApp() {
@@ -10,6 +9,7 @@ export default function AuthApp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [cart, setCart] = useState([]);
 
   const handleLogin = async () => {
     setError("");
@@ -28,6 +28,17 @@ export default function AuthApp() {
     setUser(null);
     setEmail("");
     setPassword("");
+    setCart([]);
+  };
+
+  const products = [
+    { id: 1, name: "Product A", price: 20 },
+    { id: 2, name: "Product B", price: 35 },
+    { id: 3, name: "Product C", price: 50 },
+  ];
+
+  const addToCart = (product) => {
+    setCart([...cart, product]);
   };
 
   return (
@@ -66,6 +77,29 @@ export default function AuthApp() {
           )}
         </CardContent>
       </Card>
+
+      {user && (
+        <div className="mt-6 w-96">
+          <h2 className="text-xl font-semibold">Products</h2>
+          {products.map((product) => (
+            <div key={product.id} className="flex justify-between p-2 border-b">
+              <span>{product.name} - ${product.price}</span>
+              <Button onClick={() => addToCart(product)}>Add to Cart</Button>
+            </div>
+          ))}
+
+          <h2 className="text-xl font-semibold mt-4">Cart</h2>
+          {cart.length > 0 ? (
+            cart.map((item, index) => (
+              <div key={index} className="p-2 border-b">
+                {item.name} - ${item.price}
+              </div>
+            ))
+          ) : (
+            <p>Your cart is empty.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
